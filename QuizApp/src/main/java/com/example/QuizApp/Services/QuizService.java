@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +36,15 @@ public class QuizService {
     }
 
     public ResponseEntity<List<QuestionWrapper>> getQuizQuestion(Integer id) {
-        Optional<Quiz> quiz=
+        Optional<Quiz> quiz=quizDao.findById(id);
+        List<Question> questionsFromDB=quiz.get().getQuestions();
+        //we need to add the data for user
+        List<QuestionWrapper> questionForUser=new ArrayList<>();
+//adding the data for user
+        for(Question q:questionsFromDB) {
+            QuestionWrapper qw = new QuestionWrapper(q.getId(),q.getQuestionTitle(),q.getOption1(),q.getOption2(),q.getOption3(),q.getOption4());
+            questionForUser.add(qw);
+        }
+        return new ResponseEntity<>(questionForUser,HttpStatus.OK);
     }
 }
