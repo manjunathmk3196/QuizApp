@@ -5,11 +5,15 @@ import com.example.QuizApp.DAO.QuizDao;
 import com.example.QuizApp.Models.Question;
 import com.example.QuizApp.Models.QuestionWrapper;
 import com.example.QuizApp.Models.Quiz;
+import com.example.QuizApp.Models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,5 +50,21 @@ public class QuizService {
             questionForUser.add(qw);
         }
         return new ResponseEntity<>(questionForUser,HttpStatus.OK);
+    }
+
+
+    public ResponseEntity<Integer> calculateResult(Integer id, List<Response> responses) {
+        Quiz quiz=quizDao.findById(id).get();
+        List<Question> questions=quiz.getQuestions();
+        int right=0;
+        int i=0;
+
+        for (Response response: responses){
+            if(response.getResponse().equals(questions.get(i).getRightAnswer()))
+                right++;
+i++;
+        }
+        return new ResponseEntity<>(right,HttpStatus.OK);
+
     }
 }
